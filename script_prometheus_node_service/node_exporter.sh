@@ -26,12 +26,11 @@ else
     WantedBy=multi-user.target
 EOF
 
-    sudo useradd -M -r /bin/false node_exporter
-    sudo chown -R node_exporter. /usr/local/node_exporter-1.9.1.linux-amd64/node_exporter
+    sudo useradd -r -s /usr/sbin/nologin node_exporter
+    sudo chown -R node_exporter:node_exporter /usr/local/node_exporter-1.9.1.linux-amd64/node_exporter
     sudo chmod 755 /usr/local/node_exporter-1.9.1.linux-amd64/node_exporter
     sudo systemctl daemon-reload
     sudo systemctl start node_exporter.service
     sudo systemctl enable node_exporter.service
     sudo systemctl status node_exporter.service
-    sudo chmod +x /opt/node_exporter.sh
 fi
