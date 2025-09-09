@@ -1,3 +1,4 @@
+#!/bin/bash
 SERVICE_NAME2="prometheus"
 
 if [ -e "/usr/lib/systemd/system/${SERVICE_NAME2}.service" ]; then
@@ -7,7 +8,7 @@ else
     echo "No $SERVICE_NAME2 service file found."
 
     wget https://github.com/prometheus/prometheus/releases/download/v3.6.0-rc.0/prometheus-3.6.0-rc.0.linux-amd64.tar.gz
-    tar xvf prometheus-3.6.0-rc.0.linux-amd64.tar.gz
+    tar -xvf prometheus-3.6.0-rc.0.linux-amd64.tar.gz
     mv prometheus-3.6.0-rc.0.linux-amd64 /usr/local
 
     cat >/usr/local/prometheus-3.6.0-rc.0.linux-amd64/prometheus.yml<< EOF
