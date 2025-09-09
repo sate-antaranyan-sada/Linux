@@ -1,3 +1,4 @@
+#!/bin/bash
 SERVICE_NAME="node_exporter"
 
 if [ -e "usr/lib/systemd/system/${SERVICE_NAME}.service" ]; then
