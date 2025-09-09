@@ -7,17 +7,15 @@ This repository contains **two** shell scripts to install and run **Prometheus**
 ## Repository Layout
 
 ```
-/opt/scripts/install_node_exporter.sh     # Script #1 — installs and configures Node Exporter (systemd)
-/opt/scripts/install_prometheus.sh        # Script #2 — installs and configures Prometheus (systemd)
+/opt/node_exporter.sh     # Script #1 — installs and configures Node Exporter (systemd)
+/opt/prometheus.sh        # Script #2 — installs and configures Prometheus (systemd)
 ```
-
-> The paths above are the suggested locations used in the examples below.
 
 ---
 
 ## 1 Node Exporter Install Script
 
-**File:** `/opt/scripts/install_node_exporter.sh`
+**File:** `/opt/node_exporter.sh`
 
 ### What the script does
 - Checks if a `node_exporter` service unit already exists and is active; if so, it **exits** without changes.
@@ -33,15 +31,14 @@ This repository contains **two** shell scripts to install and run **Prometheus**
 ### Usage
 ```bash
 # 1) Place the script
-sudo mkdir -p /opt/scripts
-sudo nano /opt/scripts/install_node_exporter.sh
+sudo nano /opt/node_exporter.sh
 #   (paste the script contents, save and exit)
 
 # 2) Make it executable
-sudo chmod +x /opt/scripts/install_node_exporter.sh
+sudo chmod +x /opt/node_exporter.sh
 
 # 3) Run it
-sudo /opt/scripts/install_node_exporter.sh
+sudo /opt/exporter.sh
 ```
 
 ### Verify
@@ -66,7 +63,7 @@ curl -s http://localhost:9200/metrics | head
 
 ## 2 Prometheus Install Script
 
-**File:** `/opt/scripts/install_prometheus.sh`
+**File:** `/opt/prometheus.sh`
 
 ### What the script does
 - Checks if a `prometheus` service unit exists and is active; if so, it **exits** without changes.
@@ -82,15 +79,14 @@ curl -s http://localhost:9200/metrics | head
 ### Usage
 ```bash
 # 1) Place the script
-sudo mkdir -p /opt/scripts
-sudo nano /opt/scripts/install_prometheus.sh
+sudo nano /opt/prometheus.sh
 #   (paste the script contents, save and exit)
 
 # 2) Make it executable
-sudo chmod +x /opt/scripts/install_prometheus.sh
+sudo chmod +x /opt/prometheus.sh
 
 # 3) Run it
-sudo /opt/scripts/install_prometheus.sh
+sudo /opt/prometheus.sh
 ```
 
 ### Verify
@@ -99,10 +95,4 @@ sudo /opt/scripts/install_prometheus.sh
 systemctl status prometheus
 
 # Follow logs
-journalctl -u prometheus -f
-
-
-## Documentation
-
-- Node Exporter guide: https://prometheus.io/docs/guides/node-exporter/
-- Prometheus docs: https://prometheus.io/docs/introduction/overview/
+journalctl -u prometheus
