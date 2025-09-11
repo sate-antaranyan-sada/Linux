@@ -124,6 +124,7 @@ else
 fi
 graphana_Exec="/usr/local/grafana_12.1.1_16903967602_linux_amd64 --config=/usr/local/grafana_12.1.1_16903967602_linux_amd64/conf/grafana.ini --homepath=/usr/local/grafana_12.1.1_16903967602_linux_amd64"
 grafana_vers="grafana_12.1.1_16903967602_linux_amd64"
+grafana_path="https://dl.grafana.com/grafana/release/12.1.1/grafana_12.1.1_16903967602_linux_amd64.tar.gz"
 
 if [ -e "/etc/systemd/system/grafana.service" ]; then
    echo "running the is_active function"
