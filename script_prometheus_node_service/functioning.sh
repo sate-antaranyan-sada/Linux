@@ -54,6 +54,17 @@ function installing {
     [Install]
     WantedBy=multi-user.target
 EOF
+    if [ ${SERVICE_NAME} = grafana ]; then
+    cat >/usr/local/${version}/conf/provisioning/datasources/datasources.yml<<EOF
+    apiVersion:1
+    datasources:
+        -name:Prometheus
+         type: prometheus
+         url: http://localhost:9090
+         isdefault: true
+EOF
+    sudo mkdir -p /usr/local/${version}/data
+    fi
     if [ ${SERVICE_NAME} = prometheus ]; then
     cat >/usr/local/${version}/${SERVICE_NAME}.yml<<EOF
     global:
@@ -71,6 +82,7 @@ EOF
     sudo mkdir -p /var/lib/${SERVICE_NAME}
     sudo chown -R ${SERVICE_NAME}:${SERVICE_NAME} /var/lib/${SERVICE_NAME}
     fi
+
     sudo systemctl daemon-reload
     sudo systemctl start ${SERVICE_NAME}.service
     sudo systemctl enable ${SERVICE_NAME}.service
@@ -106,6 +118,21 @@ else
   read ans
   if [ "$ans" == "y" ]; then
   installing "${prometheus_path}" "${prometheus_vers}" "prometheus" "${prometheus_Exec}"
+  else
+  echo "Okay, suit yourself."
+  fi
+fi
+graphana_Exec="/usr/local/grafana_12.1.1_16903967602_linux_amd64 --config=/usr/local/grafana_12.1.1_16903967602_linux_amd64/conf/grafana.ini --homepath=/usr/local/grafana_12.1.1_16903967602_linux_amd64"
+grafana_vers="grafana_12.1.1_16903967602_linux_amd64"
+
+if [ -e "/etc/systemd/system/grafana.service" ]; then
+   echo "running the is_active function"
+   is_active "grafana"
+else
+  printf "There is no grafana. Do you want to install? (y/n): "
+  read ans
+  if [ "$ans" == "y" ]; then
+  installing "${grafana_path}" "${grafana_vers}" "grafana" "${graphana_Exec}"
   else
   echo "Okay, suit yourself."
   fi
