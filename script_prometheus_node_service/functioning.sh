@@ -56,12 +56,13 @@ function installing {
 EOF
     if [ ${SERVICE_NAME} = grafana ]; then
     cat >/usr/local/${version}/conf/provisioning/datasources/datasources.yml<<EOF
-    apiVersion:1
+    apiVersion: 1
     datasources:
-        -name:Prometheus
-         type: prometheus
-         url: http://localhost:9090
-         isdefault: true
+    - name: Prometheus
+        type: prometheus
+        url: http://localhost:9090
+        isDefault: true
+
 EOF
     sudo mkdir -p /usr/local/${version}/data
     fi
