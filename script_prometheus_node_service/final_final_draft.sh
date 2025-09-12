@@ -54,7 +54,7 @@ function check_create_user {
 }
 
 function installing {
-  local SERVICE_NAME="$1" url="$2" VERSION="$3" ExecLoc="$4"
+  SERVICE_NAME="$1" url="$2" VERSION="$3" ExecLoc="$4"
 
   check_create_user "$SERVICE_NAME"
 
