@@ -46,8 +46,8 @@ function check_create_user {
     echo "Found a user named ${SERVICE_NAME}"
   else
     echo "Creating a user ${SERVICE_NAME}"
-    groupadd -f "$SERVICE_NAME"
-    useradd -r -g "$SERVICE_NAME" -M -s /usr/sbin/nologin "$SERVICE_NAME"
+    sudo groupadd -f "$SERVICE_NAME"
+    sudo useradd -r -g "$SERVICE_NAME" -M -s /usr/sbin/nologin "$SERVICE_NAME"
     mkdir -p "/etc/${SERVICE_NAME}"
     chown "${SERVICE_NAME}:${SERVICE_NAME}" "/etc/${SERVICE_NAME}"
   fi
