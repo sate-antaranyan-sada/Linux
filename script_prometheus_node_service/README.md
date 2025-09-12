@@ -1,11 +1,8 @@
 
-# README: Automated Installation of Prometheus, Node Exporter, and Grafana
+# Automated Installation of Prometheus, Node Exporter, and Grafana
 
 ## Overview
-This script automates the installation, configuration, and provisioning of:
-- **Node Exporter** – for collecting Linux host metrics  
-- **Prometheus** – for scraping and storing metrics  
-- **Grafana** – for visualizing metrics  
+This script automates the installation and configuration of Node Exporter, Prometheus and Grafana
 
 It handles:
 - Downloading and extracting binaries  
@@ -15,23 +12,13 @@ It handles:
 
 ---
 
-## Prerequisites
-- **Operating System**: Linux (systemd-based distribution, e.g. Ubuntu/Debian/CentOS)  
-- **Dependencies**:  
-  - `wget`  
-  - `tar`  
-  - `systemd`  
-  - `bash`  
-- **Privileges**: Must be run as **root** or with `sudo`  
-
----
-
 ## What the Script Does
 1. **Checks for existing services**  
-   - If the service file exists, prompts whether to restart/enable it.  
+   - If the service file exists, checks if it's active and promts to either restart or enable it.  
    - If not, asks whether to install it.  
 
-2. **Creates service users**  
+2. **Checks for existing users** 
+   - Checks if service users exists and creates if they don't
    - Each service gets its own user (`node_exporter`, `prometheus`, `grafana`).  
    - These users are system accounts with no login shell.  
 
@@ -55,25 +42,20 @@ It handles:
 ---
 
 ## Installation Steps
-1. Copy the script into `/opt/scripts/install_monitoring.sh`  
+1. Clone the git repo 
 
-   ```bash
-   sudo mkdir -p /opt/scripts
-   sudo nano /opt/scripts/install_monitoring.sh
-   ```
-
-   Paste the script content and save.
+2. Find the script_prometheus_node_service folder and the final_final_draft.sh file
 
 2. Make the script executable:
 
    ```bash
-   sudo chmod +x /opt/scripts/install_monitoring.sh
+   chmod +x final_final_draft.sh
    ```
 
 3. Run the script:
 
    ```bash
-   sudo /opt/scripts/install_monitoring.sh
+   sudo ./final_final_draft.sh
    ```
 
 4. Follow the prompts when asked whether to install/restart services.
@@ -95,21 +77,6 @@ After successful execution, you will have:
   - Runs on port `3000` (default)  
   - Comes pre-provisioned with Prometheus as a datasource  
 
----
-
-## Verifying Installations
-- Check services:
-
-  ```bash
-  systemctl status node_exporter
-  systemctl status prometheus
-  systemctl status grafana
-  ```
-
-- Test in browser:
-  - Prometheus → http://localhost:9090  
-  - Node Exporter → http://localhost:9100/metrics  
-  - Grafana → http://localhost:3000 (default credentials: `admin` / `admin`)  
 
 ---
 
@@ -123,6 +90,4 @@ After successful execution, you will have:
 ---
 
 ## Notes
-- Versions are pinned inside the script. Update URLs and version variables if you want newer releases.  
-- Script uses interactive prompts (`y/n`) — automation will require modifying/removing those.  
-- Run on a clean system to avoid conflicts with preinstalled Prometheus/Grafana services.  
+- You can chnage the versions being downloaded when calling the functions.
