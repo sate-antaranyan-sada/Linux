@@ -1,108 +1,128 @@
-# Prometheus + Node Exporter (systemd) — Install Scripts
 
-This repository contains **two** shell scripts to install and run **Prometheus** and **Prometheus Node Exporter** as `systemd` services on Linux.
+# README: Automated Installation of Prometheus, Node Exporter, and Grafana
 
----
+## Overview
+This script automates the installation, configuration, and provisioning of:
+- **Node Exporter** – for collecting Linux host metrics  
+- **Prometheus** – for scraping and storing metrics  
+- **Grafana** – for visualizing metrics  
 
-## Repository Layout
-
-```
-/opt/scripts/install_node_exporter.sh     # Script #1 — installs and configures Node Exporter (systemd)
-/opt/scripts/install_prometheus.sh        # Script #2 — installs and configures Prometheus (systemd)
-```
-
-> The paths above are the suggested locations used in the examples below.
-
----
-
-## 1 Node Exporter Install Script
-
-**File:** `/opt/scripts/install_node_exporter.sh`
-
-### What the script does
-- Checks if a `node_exporter` service unit already exists and is active; if so, it **exits** without changes.
-- If not present, it:
-  1. Downloads **node_exporter v1.9.1** to `/opt/`.
-  2. Extracts to `/usr/local/` (directory name contains version).
-  3. Writes a `systemd` unit at: `/usr/lib/systemd/system/node_exporter.service`.
-  4. Creates a dedicated system user `node_exporter` (no home directory, no login, no shell).
-  5. Sets file ownership and permissions.
-  6. Reloads `systemd`, **enables** and **starts** the service.
-  7. Configures Node Exporter to listen on **`:9200`**.
-
-### Usage
-```bash
-# 1) Place the script
-sudo mkdir -p /opt/scripts
-sudo nano /opt/scripts/install_node_exporter.sh
-#   (paste the script contents, save and exit)
-
-# 2) Make it executable
-sudo chmod +x /opt/scripts/install_node_exporter.sh
-
-# 3) Run it
-sudo /opt/scripts/install_node_exporter.sh
-```
-
-### Verify
-```bash
-# Check service
-systemctl status node_exporter
-
-# Follow logs
-journalctl -u node_exporter -f
-
-# Check metrics locally
-curl -s http://localhost:9200/metrics | head
-```
-
-> **Note:** If you prefer the **default** Node Exporter port `9100`, edit the `ExecStart` line in the unit file to remove the custom `--web.listen-address=:9200` flag, then run:
-> ```bash
-> sudo systemctl daemon-reload
-> sudo systemctl restart node_exporter
-> ```
+It handles:
+- Downloading and extracting binaries  
+- Creating dedicated system users  
+- Setting up systemd services  
+- Provisioning default Prometheus and Grafana configurations  
 
 ---
 
-## 2 Prometheus Install Script
+## Prerequisites
+- **Operating System**: Linux (systemd-based distribution, e.g. Ubuntu/Debian/CentOS)  
+- **Dependencies**:  
+  - `wget`  
+  - `tar`  
+  - `systemd`  
+  - `bash`  
+- **Privileges**: Must be run as **root** or with `sudo`  
 
-**File:** `/opt/scripts/install_prometheus.sh`
+---
 
-### What the script does
-- Checks if a `prometheus` service unit exists and is active; if so, it **exits** without changes.
-- If not present, it:
-  1. Downloads **Prometheus v3.6.0-rc.0 (linux-amd64)**.
-  2. Extracts Prometheus under `/usr/local/` (directory name contains version).
-  3. Creates a minimal `prometheus.yml` that scrapes Prometheus **itself** (`localhost:9090`).
-  4. Writes a `systemd` unit at `/usr/lib/systemd/system/prometheus.service`.
-  5. Creates a dedicated system user **prometheus** (no login, no shell).
-  6. Sets file ownership and permissions.
-  7. Reloads `systemd`, **enables** and **starts** the service.
+## What the Script Does
+1. **Checks for existing services**  
+   - If the service file exists, prompts whether to restart/enable it.  
+   - If not, asks whether to install it.  
 
-### Usage
-```bash
-# 1) Place the script
-sudo mkdir -p /opt/scripts
-sudo nano /opt/scripts/install_prometheus.sh
-#   (paste the script contents, save and exit)
+2. **Creates service users**  
+   - Each service gets its own user (`node_exporter`, `prometheus`, `grafana`).  
+   - These users are system accounts with no login shell.  
 
-# 2) Make it executable
-sudo chmod +x /opt/scripts/install_prometheus.sh
+3. **Downloads and installs binaries**  
+   - Node Exporter v1.9.1  
+   - Prometheus v3.6.0-rc.0  
+   - Grafana v12.1.1  
 
-# 3) Run it
-sudo /opt/scripts/install_prometheus.sh
-```
+   Extracted to `/usr/local/<version>/`.  
 
-### Verify
-```bash
-# Check service
-systemctl status prometheus
+4. **Configures systemd services**  
+   - Creates `/etc/systemd/system/<service>.service`  
+   - Enables and starts the services  
 
-# Follow logs
-journalctl -u prometheus -f
+5. **Provisions default configs**  
+   - Prometheus config at:  
+     `/usr/local/prometheus-<version>/prometheus.yml`  
+   - Grafana datasource config at:  
+     `/usr/local/grafana-<version>/conf/provisioning/datasources/datasources.yml`  
 
+---
 
-## Documentation
+## Installation Steps
+1. Copy the script into `/opt/scripts/install_monitoring.sh`  
 
-- Node Exporter guide: https://prometheus.io/docs/guides/node-exporter/
-- Prometheus docs: https://prometheus.io/docs/introduction/overview/
+   ```bash
+   sudo mkdir -p /opt/scripts
+   sudo nano /opt/scripts/install_monitoring.sh
+   ```
+
+   Paste the script content and save.
+
+2. Make the script executable:
+
+   ```bash
+   sudo chmod +x /opt/scripts/install_monitoring.sh
+   ```
+
+3. Run the script:
+
+   ```bash
+   sudo /opt/scripts/install_monitoring.sh
+   ```
+
+4. Follow the prompts when asked whether to install/restart services.
+
+---
+
+## Installed Services
+After successful execution, you will have:
+
+- **Node Exporter**  
+  - Runs on port `9100`  
+  - Exposes host metrics  
+
+- **Prometheus**  
+  - Runs on port `9090`  
+  - Configured to scrape itself (`localhost:9090`) and Node Exporter (`localhost:9100`)  
+
+- **Grafana**  
+  - Runs on port `3000` (default)  
+  - Comes pre-provisioned with Prometheus as a datasource  
+
+---
+
+## Verifying Installations
+- Check services:
+
+  ```bash
+  systemctl status node_exporter
+  systemctl status prometheus
+  systemctl status grafana
+  ```
+
+- Test in browser:
+  - Prometheus → http://localhost:9090  
+  - Node Exporter → http://localhost:9100/metrics  
+  - Grafana → http://localhost:3000 (default credentials: `admin` / `admin`)  
+
+---
+
+## File Locations
+- **Systemd services** → `/etc/systemd/system/`  
+- **Prometheus binary/config** → `/usr/local/prometheus-<version>/`  
+- **Grafana binary/config** → `/usr/local/grafana-<version>/`  
+- **Node Exporter binary** → `/usr/local/node_exporter-<version>/`  
+- **Prometheus data directory** → `/var/lib/prometheus`  
+
+---
+
+## Notes
+- Versions are pinned inside the script. Update URLs and version variables if you want newer releases.  
+- Script uses interactive prompts (`y/n`) — automation will require modifying/removing those.  
+- Run on a clean system to avoid conflicts with preinstalled Prometheus/Grafana services.  
