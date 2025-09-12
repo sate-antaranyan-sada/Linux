@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ex
-
+#Checks if the service file exists, if doesn't calls the installing function, otherwise calls the is_active function
 function exists {
   SERVICE_NAME="$1" url="$2" VERSION="$3" ExecLoc="$4"
   if [ -e "/etc/systemd/system/${SERVICE_NAME}.service" ]; then
@@ -16,7 +16,7 @@ function exists {
     fi
   fi
 }
-
+#Checks if the service is active, restarts and enables the service by choice
 function is_active {
   svc="$1"
   if systemctl is-active --quiet "$svc"; then
@@ -39,7 +39,7 @@ function is_active {
     fi
   fi
 }
-
+#Checks if the user exists and creates if doesn't
 function check_create_user {
   SERVICE_NAME="$1"
   if getent passwd "$SERVICE_NAME" >/dev/null 2>&1; then
@@ -52,7 +52,7 @@ function check_create_user {
     chown "${SERVICE_NAME}:${SERVICE_NAME}" "/etc/${SERVICE_NAME}"
   fi
 }
-
+#calls the check_create_user function then proceeds to install the service 
 function installing {
   SERVICE_NAME="$1" url="$2" VERSION="$3" ExecLoc="$4"
 
@@ -80,7 +80,7 @@ EOF
   systemctl daemon-reload
   systemctl enable "${SERVICE_NAME}.service"
   systemctl start  "${SERVICE_NAME}.service"
-  systemctl status "${SERVICE_NAME}.service" --no-pager || true
+  systemctl status "${SERVICE_NAME}.service" --no-pager || 'echo no status'
 }
 
 function provision_prometheus {
