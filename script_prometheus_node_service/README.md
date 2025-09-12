@@ -52,7 +52,7 @@ It handles:
    chmod +x final_final_draft.sh
    ```
 
-3. Run the script:
+3. Run the script as a root user as it checks /etc/passwd:
 
    ```bash
    sudo ./final_final_draft.sh
