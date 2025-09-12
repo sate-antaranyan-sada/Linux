@@ -48,7 +48,7 @@ function check_create_user {
     echo "Creating a user ${SERVICE_NAME}"
     sudo groupadd -f "$SERVICE_NAME"
     sudo useradd -r -g "$SERVICE_NAME" -M -s /usr/sbin/nologin "$SERVICE_NAME"
-    mkdir -p "/etc/${SERVICE_NAME}"
+    sudo mkdir -p "/etc/${SERVICE_NAME}"
     chown "${SERVICE_NAME}:${SERVICE_NAME}" "/etc/${SERVICE_NAME}"
   fi
 }
