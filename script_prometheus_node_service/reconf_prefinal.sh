@@ -16,29 +16,26 @@ function exists {
     fi
   fi
 }
-#Checks if the service is active, restarts and enables the service by choice
+#Checks if the service is active, reconfigures by choice
 function is_active {
   svc="$1"
   if systemctl is-active --quiet "$svc"; then
-    printf "There's an active %s. Do you want to restart or reconfigurate it? (**rs**(restart)/**rc**(reconfigurate)): " "$svc"
+    printf "There's an active %s. Do you want to reconfigurate it? (y/n): " "$svc"
     read -r ans
-    if [ "$ans" = "rc" ]; then
+    if [ "$ans" = "y" ]; then
       config "$SERVICE_NAME"
       echo "Reconfigured it!"
     else
-      systemctl restart "${svc}.service"
-      echo "Restarted it!"
+      echo "Okay, suit yourself!"
     fi
   else
-    printf "There's an inactive %s. Do you want to enable or reconfigurate it? (**e**(enable)/**rc**(reconfigurate)): " "$svc"
+    printf "There's an inactive %s. Do you want to reconfigurate it? (y/n): " "$svc"
     read -r ans
-    if [ "$ans" = "rc" ]; then
+    if [ "$ans" = "y" ]; then
       config "$SERVICE_NAME"
       echo "Reconfigured it!"
     else
-      systemctl enable "${svc}.service"
-      systemctl start  "${svc}.service"
-      echo "Enabled it!"
+      echo "okay, suit yourself!"
     fi
   fi
 }
@@ -156,6 +153,6 @@ EOF
     :
   fi
 systemctl daemon-reload
-systemctl enable --now "${!name_var}service" --no-pager
+systemctl enable --now "${!name_var}.service" --no-pager
 systemctl --no-pager status "${!name_var}.service"
 done
