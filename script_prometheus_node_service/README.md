@@ -14,7 +14,7 @@ It handles:
 
 ## What the Script Does
 1. **Checks for existing services**  
-   - If the service file exists, checks if it's active and promts to either restart or enable it.  
+   - If the service file exists, checks if it's active and promts to reconfigurate or not.  
    - If not, asks whether to install it.  
 
 2. **Checks for existing users** 
@@ -33,7 +33,7 @@ It handles:
    - Creates `/etc/systemd/system/<service>.service`  
    - Enables and starts the services  
 
-5. **Provisions default configs**  
+5. **Default configs for prometheus and grafana**  
    - Prometheus config at:  
      `/usr/local/prometheus-<version>/prometheus.yml`  
    - Grafana datasource config at:  
@@ -44,21 +44,21 @@ It handles:
 ## Installation Steps
 1. Clone the git repo 
 
-2. Find the script_prometheus_node_service folder and the final_final_draft.sh file
+2. Find the script_prometheus_node_service folder and the reconf_prefinal.sh file
 
 2. Make the script executable:
 
    ```bash
-   chmod +x final_final_draft.sh
+   chmod +x reconf_prefinal.sh
    ```
 
 3. Run the script as a root user as it checks /etc/passwd:
 
    ```bash
-   sudo ./final_final_draft.sh
+   sudo ./reconf_prefinal.sh
    ```
 
-4. Follow the prompts when asked whether to install/restart services.
+4. Follow the prompts when asked whether to install/reconfigure the services.
 
 ---
 
