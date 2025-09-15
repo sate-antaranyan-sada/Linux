@@ -44,18 +44,18 @@ It handles:
 ## Installation Steps
 1. Clone the git repo 
 
-2. Find the script_prometheus_node_service folder and the reconf_prefinal.sh file
+2. Find the script_prometheus_node_service folder and the final.sh file
 
 2. Make the script executable:
 
    ```bash
-   chmod +x reconf_prefinal.sh
+   chmod +x final.sh
    ```
 
 3. Run the script as a root user as it checks /etc/passwd:
 
    ```bash
-   sudo ./reconf_prefinal.sh
+   sudo ./final.sh
    ```
 
 4. Follow the prompts when asked whether to install/reconfigure the services.
