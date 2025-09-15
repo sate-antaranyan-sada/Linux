@@ -63,10 +63,9 @@ function installing {
   config "$SERVICE_NAME" "$ExecLoc"
 }
 
-# Return 0 only if config/installation was performed; 1 otherwise
+#Return 0 only if config/installation was performed, else 1 
 function exists {
   SERVICE_NAME="$1" url="$2" VERSION="$3" ExecLoc="$4"
-
   if [ -e "/etc/systemd/system/${SERVICE_NAME}.service" ]; then
     echo "${SERVICE_NAME}.service exists."
     if ask_should_configure "$SERVICE_NAME"; then
@@ -116,10 +115,8 @@ for i in node prom graf; do
       dir="/usr/local/${!ver_var}"
       if [ ! -d "$dir" ]; then
         echo "$dir not found. Skipping Prometheus provision"
-        continue
-      fi
-
-      tee "${dir}/prometheus.yml" >/dev/null <<'EOF'
+      else
+        tee "${dir}/prometheus.yml" >/dev/null <<'EOF'
 global:
   scrape_interval: 15s
 
@@ -133,18 +130,17 @@ scrape_configs:
       - targets: ['localhost:9100']
 EOF
 
-      mkdir -p /var/lib/prometheus
-      chown -R prometheus:prometheus /var/lib/prometheus
-      systemctl restart prometheus.service || true
-      echo "Prometheus provisioning complete."
+        mkdir -p /var/lib/prometheus
+        chown -R prometheus:prometheus /var/lib/prometheus
+        systemctl restart prometheus.service || true
+        echo "Prometheus provisioning complete."
+      fi
 
     elif [ "$i" == "graf" ]; then
       dir="/usr/local/${!ver_var}"
       if [ ! -d "$dir" ]; then
         echo "$dir not found. Skipping Grafana provision"
-        continue
-      fi
-
+      else
       mkdir -p "${dir}/conf/provisioning/datasources" "${dir}/data" "${dir}/logs"
       tee "${dir}/conf/provisioning/datasources/datasources.yml" >/dev/null <<'EOF'
 apiVersion: 1
@@ -158,6 +154,7 @@ EOF
       chown -R grafana:grafana "${dir}/conf" "${dir}/data" "${dir}/logs"
       systemctl restart grafana.service || true
       echo "Grafana provisioning complete."
+      fi
     fi
   else
     echo "No changes for ${!name_var}."
