@@ -5,11 +5,11 @@ RUN groupadd -g 6534 graf_group \
 
 WORKDIR /usr/local
 
-ADD https://dl.grafana.com/oss/release/grafana-12.1.1.linux-amd64.tar.gz /usr/local/
-RUN tar -xzf /usr/local/grafana-12.1.1.linux-amd64.tar.gz -C /usr/local/grafana-12.1.1.linux-amd64 \
-&& rm grafana-12.1.1.linux-amd64.tar.gz
+ADD https://dl.grafana.com/oss/release/grafana-12.1.1.linux-amd64.tar.gz /usr/local/grafana-12.1.1.linux-amd64.tar.gz
+RUN tar -xzf /usr/local/grafana-12.1.1.linux-amd64.tar.gz -C /usr/local \
+&& rm /usr/local/grafana-12.1.1.linux-amd64.tar.gz
 
-COPY datasources.yml /usr/local/rafana-12.1.1.linux-amd64/conf/provisioning/datasources/datasources.yml
+COPY datasources.yml /usr/local/grafana-12.1.1.linux-amd64/conf/provisioning/datasources/datasources.yml
 
 RUN chown -R graf_user:graf_group /usr/local/grafana-12.1.1.linux-amd64
 
