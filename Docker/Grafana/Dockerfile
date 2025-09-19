@@ -18,4 +18,4 @@ USER graf_user
 
 EXPOSE 3000
 
-ENTRYPOINT ["/usr/local/grafana-12.1.1/bin/grafana-server", "--homepath=/usr/local/grafana-12.1.1"]
+ENTRYPOINT ["/bin/grafana-server", "--homepath=/usr/local/grafana-12.1.1"]
