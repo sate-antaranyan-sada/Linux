@@ -1,13 +1,13 @@
 services:
   node:
-    build: ./node
+    build: ./Node
     image: my-node:vc1
     container_name: node-exporter
     restart: unless-stopped
     ports:
       - 9100:9100
   prom:
-    build: ./prom
+    build: ./Prom
     image: my-prom:vc1
     container_name: prometheus
     restart: unless-stopped
@@ -21,7 +21,7 @@ services:
         source: Prom/query.log
         target: /usr/local/prometheus-3.6.0-rc.0.linux-amd64/query.log
   graf:
-    build: ./graf
+    build: ./Graf
     image: my-graf:vc1
     container_name: grafana
     restart: unless-stopped
@@ -29,6 +29,6 @@ services:
       - 3000:3000
     volumes:
       - type: bind
-        source: graf/datasources.yml
+        source: Graf/datasources.yml
         target: /usr/local/grafana-12.1.1/conf/provisioning/datasources/datasources.yml
 
