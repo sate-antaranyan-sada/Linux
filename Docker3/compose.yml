@@ -15,8 +15,11 @@ services:
       - 9090:9090
     volumes:
       - type: bind
-        source: ./prometheus.yml
+        source: Prom/prometheus.yml
         target: /usr/local/prometheus-3.6.0-rc.0.linux-amd64/prometheus.yml
+      - type: bind
+        source: Prom/query.log
+        target: /usr/local/prometheus-3.6.0-rc.0.linux-amd64/query.log
   graf:
     build: ./graf
     image: my-graf:vc1
@@ -26,6 +29,6 @@ services:
       - 3000:3000
     volumes:
       - type: bind
-        source: ./datasources.yml
+        source: graf/datasources.yml
         target: /usr/local/grafana-12.1.1/conf/provisioning/datasources/datasources.yml
 
