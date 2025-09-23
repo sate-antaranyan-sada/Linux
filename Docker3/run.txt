@@ -1,0 +1,25 @@
+docker run \
+--name my-node \
+--network npg \
+--detach \
+--publish 9100:9100 \
+--restart  unless-stopped \
+my-node:latest
+
+docker run \
+--name my-prom \
+--network npg \
+--detach \
+--publish 9090:9090 \
+--restart  unless-stopped \
+--mount type=bind,source="$(pwd)"/prometheus.yml,target=/usr/local/prometheus-3.6.0-rc.0.linux-amd64/prometheus.yml \
+my-prom:latest
+
+docker run \
+--name my-graf \
+--network npg \
+--detach \
+--publish 3000:3000 \
+--restart  unless-stopped \
+--mount type=bind,source="$(pwd)"/datasources.yml,target=/usr/local/grafana-12.1.1/conf/provisioning/datasources/datasources.yml \
+my-graf:latest
