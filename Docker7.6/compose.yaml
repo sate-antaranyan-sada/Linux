@@ -1,0 +1,45 @@
+services:
+  loki:
+    build: ./loki
+    image: my-loki:local
+    container_name: ${LOKI_CONTAINER_NAME}
+    env_file: .env
+    volumes:
+      - ./configs/local-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    ports:
+      - "${LOKI_PORT}:${LOKI_PORT}"
+    command:
+      - -config.expand-env=true
+      - -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    build: ./grafana
+    image: my-grafana:local
+    container_name: ${GRAFANA_CONTAINER_NAME}
+    env_file: .env
+    volumes:
+      - ./configs/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+    ports:
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
+    depends_on:
+      - loki
+
+  promtail:
+    build: ./promtail
+    image: my-promtail:local
+    container_name: ${PROMTAIL_CONTAINER_NAME}
+    env_file: .env
+    # for now just the config
+    volumes:
+      - ./configs/promtail.yaml:/etc/promtail/config.yml:ro
+    ports:
+      - "${PROMTAIL_PORT}:${PROMTAIL_PORT}"
+    depends_on:
+      - loki
+    command:
+      - -config.expand-env=true
+      - -config.file=/etc/promtail/config.yml
+
+volumes:
+  loki-data:
