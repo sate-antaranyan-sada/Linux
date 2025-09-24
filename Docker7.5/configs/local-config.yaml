@@ -1,0 +1,16 @@
+auth_enabled: false
+
+server:
+http_listen_address: ${LOKI_CONTAINER_NAME}
+http_listen_port: ${LOKI_PORT}
+
+common:
+  path_prefix: /loki 
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+    replication_factor: 1
+    ring:
+      kvstore:
+        store: inmemory
