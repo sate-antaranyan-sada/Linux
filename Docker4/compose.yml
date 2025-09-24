@@ -1,0 +1,39 @@
+services:
+  node:
+    build: ./Node
+    image: my-node:vc1
+    container_name: node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+
+  prom:
+    build: ./Prom
+    image: my-prom:vc1
+    container_name: prometheus
+    restart: unless-stopped
+    depends_on:
+      - node
+    ports:
+      - "9090:9090"
+    volumes:
+      - type: bind
+        source: ./Prom/prometheus.yml
+        target: /usr/local/prometheus-3.6.0-rc.0.linux-amd64/prometheus.yml
+      - type: bind
+        source: ./Prom/query.log
+        target: /prometheus/query.log
+
+  graf:
+    build: ./Graf
+    image: my-graf:vc1
+    container_name: grafana
+    restart: unless-stopped
+    depends_on:
+      - prom
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ./Graf/datasources.yml
+        target: /usr/local/grafana-12.1.1/conf/provisioning/datasources/datasources.ym
