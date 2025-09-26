@@ -1,0 +1,68 @@
+services:
+  node:
+    build: ./node
+    image: my-node:vc1
+    container_name: ${NODE_CONTAINER_NAME}
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - "${NODE_PORT}:${NODE_PORT}"
+  
+  prom:
+    build: ./prometheus
+    image: my-prom:vc1
+    container_name: ${PROMETHEUS_CONTAINER_NAME}
+    restart: unless-stopped
+    depends_on:
+      - node
+    ports:
+      - "${PROMETHEUS_PORT}:${PROMETHEUS_PORT}"
+    volumes:
+      - type: bind
+        source: ./configs/prometheus.yml
+        target: /usr/local/prometheus-3.6.0-rc.0.linux-amd64/prometheus.yml
+
+  loki:
+    build: ./loki
+    image: my-loki:local
+    container_name: ${LOKI_CONTAINER_NAME}
+    env_file: .env
+    volumes:
+      - ./configs/local-config.yaml:/etc/loki/local-config.yaml:ro 
+      - loki-data:/loki
+    ports:
+      - "${LOKI_PORT}:${LOKI_PORT}"
+    command:
+      - -config.expand-env=true
+      - -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    build: ./grafana
+    image: my-grafana:local
+    container_name: ${GRAFANA_CONTAINER_NAME}
+    env_file: .env
+    volumes:
+      - ./configs/datasources.yaml:/usr/local/grafana-12.1.1/conf/provisioning/datasources/datasources.yaml:ro
+    ports:
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
+    depends_on:
+      - prom
+      - loki
+
+  promtail:
+    build: ./promtail
+    image: my-promtail:local
+    container_name: ${PROMTAIL_CONTAINER_NAME}
+    env_file: .env
+    volumes:
+      - ./configs/promtail.yaml:/etc/promtail/config.yml:ro
+    ports:
+      - "${PROMTAIL_PORT}:${PROMTAIL_PORT}"
+    depends_on:
+      - loki
+    command:
+      - -config.expand-env=true
+      - -config.file=/etc/promtail/config.yml
+
+volumes:
+  loki-data:
